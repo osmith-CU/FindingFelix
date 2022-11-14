@@ -1214,6 +1214,7 @@ GameObject:
   - component: {fileID: 2015823533}
   - component: {fileID: 2015823534}
   - component: {fileID: 2015823535}
+  - component: {fileID: 2015823536}
   m_Layer: 0
   m_Name: Gary
   m_TagString: Player
@@ -1366,6 +1367,7 @@ MonoBehaviour:
   loadInt: 1
   loadString: 
   useInt: 0
+  animator: {fileID: 2015823536}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1376,6 +1378,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   respawn: {fileID: 1049225167}
+--- !u!95 &2015823536
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015823529}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 441060a16288a6f499ea227b3c001522, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &2126047198
 GameObject:
   m_ObjectHideFlags: 0
