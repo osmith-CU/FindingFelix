@@ -5,15 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
-    private Rigidbody2D rb2D;
+    public Rigidbody2D rb2D;
     private CapsuleCollider2D cc2d;
-    private float moveSpeed;
-    private float jumpForce;
+    public float moveSpeed;
+    public float jumpForce;
     private bool isFalling;
-    private float moveHorizontal;
-    private float moveVertical;
-    private bool grounded;
-    private bool hasJumpedOnce;
+    public float moveHorizontal;
+    public float moveVertical;
+    public bool grounded;
+    public bool hasJumpedOnce;
     public int loadInt;
     public string loadString;
     public bool useInt;
@@ -31,11 +31,13 @@ public class PlayerController : MonoBehaviour {
         loadInt = 1;
         hasJumpedOnce = false;
         moveSpeed = 1f;
-        jumpForce = 25f;
+        jumpForce = 50f;
         isFalling = false;
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         cc2d = gameObject.GetComponent<CapsuleCollider2D>();
         grounded = true;
+        run = new Run(this);
+        jump = new Jump(this);
     }
 
     // Update is called once per frame
@@ -45,30 +47,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if(IsGrounded()){
-            hasJumpedOnce = false;            
-        }
-        if (moveHorizontal != 0f) {
-            if(moveHorizontal > 0f){
-                transform.localScale = new Vector3(1, 1, 1);
-            } else if(moveHorizontal < 0f){
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-            rb2D.AddForce(new Vector2(moveHorizontal * moveSpeed, 0f), ForceMode2D.Impulse);
-        }
+        
+        run.execute();
+        jump.execute();
 
-        if (moveVertical > 0f && (IsGrounded() || !hasJumpedOnce)) {
-            Debug.Log(hasJumpedOnce);
-            Debug.Log(!hasJumpedOnce);
-            hasJumpedOnce = !hasJumpedOnce;
-            rb2D.AddForce(new Vector2(0f, moveVertical * jumpForce), ForceMode2D.Impulse);
-            
-            Debug.Log(hasJumpedOnce);
-        }
-        // if(hasJumpedOnce == true){
-        //     rb2D.AddForce(new Vector2(0f, moveVertical * jumpForce), ForceMode2D.Impulse);
-        //     hasJumpedOnce = false;
-        // }
         if(moveVertical < 0f){
             isFalling = true;
         }
@@ -82,7 +64,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    private bool IsGrounded(){
+    public bool IsGrounded(){
         float buffer = .01f;
         RaycastHit2D raycastHit = Physics2D.Raycast(cc2d.bounds.center, Vector2.down, cc2d.bounds.extents.y + buffer, groundLayer);
         return (raycastHit.collider != null);

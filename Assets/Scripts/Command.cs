@@ -7,25 +7,33 @@ abstract class Command : MonoBehaviour {
     public void execute() {}
 }
 
-class Jump : Command {
-    new public void execute(float moveHorizontal) {
-        // if (moveHorizontal != 0f) {
-        //     if(moveHorizontal > 0f){
-        //         transform.localScale = new Vector3(1, 1, 1);
-        //     } else if(moveHorizontal < 0f){
-        //         transform.localScale = new Vector3(-1, 1, 1);
-        //     }
-        //     rb2D.AddForce(new Vector2(moveHorizontal * moveSpeed, 0f), ForceMode2D.Impulse);
-        // }
+class Run : Command {
+    public Run(PlayerController pc){
+        this.pc = pc;
+    }
+    new public void execute() {
+        if (pc.moveHorizontal != 0f) {
+            if(pc.moveHorizontal > 0f){
+                pc.rb2D.transform.localScale = new Vector3(1, 1, 1);
+            } else if(pc.moveHorizontal < 0f){
+                pc.rb2D.transform.localScale = new Vector3(-1, 1, 1);
+            }
+            pc.rb2D.AddForce(new Vector2(pc.moveHorizontal * pc.moveSpeed, 0f), ForceMode2D.Impulse);
+        }
     }
 }
 
-class Run : Command {
+class Jump : Command {
 
-    new public void execute(float verticalHorizontal) {
-        // if (moveVertical > 0f && IsGrounded()) {
-        //     rb2D.AddForce(new Vector2(0f, moveVertical * jumpForce), ForceMode2D.Impulse);
-        // }
+    public Jump(PlayerController pc){
+        this.pc = pc;
+    }
+
+    new public void execute() {
+        if (pc.moveVertical > 0f && (pc.IsGrounded() || !pc.hasJumpedOnce)) {
+            pc.hasJumpedOnce = !pc.hasJumpedOnce;
+            pc.rb2D.AddForce(new Vector2(0f, pc.moveVertical * pc.jumpForce), ForceMode2D.Impulse);
+        }
     }
 
     // private bool IsGrounded(){
