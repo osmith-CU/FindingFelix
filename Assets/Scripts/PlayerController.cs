@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour {
         grounded = true;
         run = new Run(this);
         jump = new Jump(this);
+        gameObject.AddComponent<Run>();
+        gameObject.AddComponent<Jump>();
     }
 
     // Update is called once per frame

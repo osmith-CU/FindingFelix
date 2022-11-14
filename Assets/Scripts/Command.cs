@@ -25,14 +25,27 @@ class Run : Command {
 
 class Jump : Command {
 
+    bool doubleJump;
+
     public Jump(PlayerController pc){
+        doubleJump = false;
         this.pc = pc;
     }
 
     new public void execute() {
-        if (pc.moveVertical > 0f && (pc.IsGrounded() || !pc.hasJumpedOnce)) {
-            pc.hasJumpedOnce = !pc.hasJumpedOnce;
+
+        if (pc.moveVertical > 0f && (pc.IsGrounded())) {
+            doubleJump = true;
             pc.rb2D.AddForce(new Vector2(0f, pc.moveVertical * pc.jumpForce), ForceMode2D.Impulse);
+            pc.hasJumpedOnce = false;
+        }
+        if (pc.moveVertical > 0f && pc.hasJumpedOnce) {
+            doubleJump = false;
+            pc.hasJumpedOnce = false;
+            pc.rb2D.AddForce(new Vector2(0f, pc.moveVertical * pc.jumpForce), ForceMode2D.Impulse);
+        }
+        if(pc.moveVertical == 0f && doubleJump){
+            pc.hasJumpedOnce = true;
         }
     }
 
