@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour {
     public int loadInt;
     public string loadString;
     public bool useInt;
+    public Animator animator;
     Jump jump;
     Run run;
     [SerializeField] private LayerMask groundLayer;
@@ -42,6 +43,11 @@ public class PlayerController : MonoBehaviour {
     void Update() {
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
+        if (moveHorizontal != 0f) {
+            animator.SetBool("IsRunning", true);
+        } else {
+            animator.SetBool("IsRunning", false);
+        }
     }
 
     void FixedUpdate() {
