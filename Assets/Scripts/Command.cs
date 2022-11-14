@@ -36,13 +36,13 @@ class Jump : Command {
 
         if (pc.moveVertical > 0f && (pc.IsGrounded())) {
             doubleJump = true;
-            pc.rb2D.AddForce(new Vector2(0f, pc.moveVertical * pc.jumpForce), ForceMode2D.Impulse);
+            pc.rb2D.velocity = (new Vector2(pc.rb2D.velocity.x, pc.jumpForce));
             pc.hasJumpedOnce = false;
         }
         if (pc.moveVertical > 0f && pc.hasJumpedOnce) {
             doubleJump = false;
             pc.hasJumpedOnce = false;
-            pc.rb2D.AddForce(new Vector2(0f, pc.moveVertical * pc.jumpForce), ForceMode2D.Impulse);
+            pc.rb2D.velocity = (new Vector2(pc.rb2D.velocity.x, pc.jumpForce));
         }
         if(pc.moveVertical == 0f && doubleJump){
             pc.hasJumpedOnce = true;

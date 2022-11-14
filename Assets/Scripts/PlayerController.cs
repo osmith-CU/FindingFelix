@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
         loadInt = 1;
         hasJumpedOnce = false;
         moveSpeed = 1f;
-        jumpForce = 50f;
+        jumpForce = 30f;
         isFalling = false;
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         cc2d = gameObject.GetComponent<CapsuleCollider2D>();
