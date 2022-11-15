@@ -1364,6 +1364,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e8195f36f4f3aa40a6c3c2263c14669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb2D: {fileID: 0}
+  moveSpeed: 0
+  jumpForce: 0
+  moveHorizontal: 0
+  moveVertical: 0
+  grounded: 0
+  hasJumpedOnce: 0
   loadInt: 1
   loadString: 
   useInt: 0

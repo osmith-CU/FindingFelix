@@ -18,12 +18,14 @@ public class PlayerController : MonoBehaviour {
     public string loadString;
     public bool useInt;
     public Animator animator;
-    Jump jump;
-    Run run;
+    private Jump jump;
+    private Run run;
+    private static PlayerController uniqueInstance;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask trapLayer;
     [SerializeField] private LayerMask levelLayer;
     [SerializeField] private Transform respawn;
+
 
     
     // Start is called before the first frame update
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour {
         loadInt = 1;
         hasJumpedOnce = false;
         moveSpeed = 1f;
-        jumpForce = 50f;
+        jumpForce = 30f;
         isFalling = false;
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         cc2d = gameObject.GetComponent<CapsuleCollider2D>();
@@ -92,5 +94,13 @@ public class PlayerController : MonoBehaviour {
 
     private void loadNextLevel(){
         SceneManager.LoadScene(loadInt);
+    }
+
+    // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)
+    public static PlayerController getInstance() {
+        if (uniqueInstance == null) {
+            uniqueInstance = new GameObject().AddComponent<PlayerController>();
+        }
+        return uniqueInstance;
     }
 }
