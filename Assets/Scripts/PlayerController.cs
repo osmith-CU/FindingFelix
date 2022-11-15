@@ -14,9 +14,7 @@ public class PlayerController : MonoBehaviour {
     public float moveVertical;
     public bool grounded;
     public bool hasJumpedOnce;
-    public int loadInt;
-    public string loadString;
-    public bool useInt;
+    public int sceneVal;
     public Animator animator;
     private Jump jump;
     private Run run;
@@ -30,8 +28,7 @@ public class PlayerController : MonoBehaviour {
     
     // Start is called before the first frame update
     void Start() {
-        useInt = false;
-        loadInt = 1;
+        sceneVal = 1;
         hasJumpedOnce = false;
         moveSpeed = 1f;
         jumpForce = 30f;
@@ -93,7 +90,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void loadNextLevel(){
-        SceneManager.LoadScene(loadInt);
+        SceneManager.LoadScene(sceneVal);
     }
 
     // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)

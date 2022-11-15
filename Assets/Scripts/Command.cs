@@ -25,7 +25,7 @@ class Run : Command {
 
 class Jump : Command {
 
-    bool doubleJump;
+    private bool doubleJump;
 
     public Jump(PlayerController pc){
         doubleJump = false;
