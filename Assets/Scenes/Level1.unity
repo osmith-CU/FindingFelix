@@ -731,7 +731,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15.444216
+  orthographic size: 15.980764
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1931,9 +1931,7 @@ MonoBehaviour:
   moveVertical: 0
   grounded: 0
   hasJumpedOnce: 0
-  loadInt: 1
-  loadString: 
-  useInt: 0
+  sceneVal: 0
   animator: {fileID: 2015823536}
   groundLayer:
     serializedVersion: 2
