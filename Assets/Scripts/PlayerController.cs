@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour {
     public float moveSpeed;
     public float jumpForce;
     private bool isFalling;
+    public bool dashing;
+    public float dashSpeed;
+    public float dashDuration;
     public float moveHorizontal;
     public float moveVertical;
     public bool grounded;
@@ -18,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     public Animator animator;
     private Jump jump;
     private Run run;
+    private Dash dash;
     private static PlayerController uniqueInstance;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask trapLayer;
@@ -33,17 +37,27 @@ public class PlayerController : MonoBehaviour {
         moveSpeed = 1f;
         jumpForce = 30f;
         isFalling = false;
+        dashing = false;
         rb2D = gameObject.GetComponent<Rigidbody2D>();
         cc2d = gameObject.GetComponent<CapsuleCollider2D>();
         grounded = true;
         run = new Run(this);
         jump = new Jump(this);
+        dash = new Dash(this);
         gameObject.AddComponent<Run>();
         gameObject.AddComponent<Jump>();
     }
 
     // Update is called once per frame
     void Update() {
+        if(dashing){
+            if(!dash.execute()){
+                return;
+            } else {
+                Debug.Log("here");
+                dashing = false;
+            }
+        }
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
         if (moveHorizontal != 0f) {
@@ -51,10 +65,13 @@ public class PlayerController : MonoBehaviour {
         } else {
             animator.SetBool("IsRunning", false);
         }
+        if(Input.GetKeyDown(KeyCode.RightShift) && dashing == false){
+            dash.execute();
+            dashing = true;
+        }
     }
 
     void FixedUpdate() {
-        
         run.execute();
         jump.execute();
 
