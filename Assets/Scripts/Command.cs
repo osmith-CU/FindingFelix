@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-abstract class Command : MonoBehaviour {
+abstract class Command {
     public PlayerController pc; 
     public bool execute() {return true;}
 }
@@ -12,14 +12,14 @@ class Run : Command {
     public Run(PlayerController pc){
         this.pc = pc;
     }
-    new public bool execute() {
-        if (pc.moveHorizontal != 0f) {
-            if(pc.moveHorizontal > 0f){
+    public new bool execute() {
+        if (pc.velocityHorizontal != 0f) {
+            if(pc.velocityHorizontal > 0f){
                 pc.rb2D.transform.localScale = new Vector3(1, 1, 1);
-            } else if(pc.moveHorizontal < 0f){
+            } else if(pc.velocityHorizontal < 0f){
                 pc.rb2D.transform.localScale = new Vector3(-1, 1, 1);
             }
-            pc.rb2D.AddForce(new Vector2(pc.moveHorizontal * pc.moveSpeed, 0f), ForceMode2D.Impulse);
+            pc.rb2D.AddForce(new Vector2(pc.velocityHorizontal * pc.movementSpeed, 0f), ForceMode2D.Impulse);
         }
         return true;
     }
@@ -34,29 +34,23 @@ class Jump : Command {
         this.pc = pc;
     }
 
-    new public bool execute() {
+    public new bool execute() {
 
-        if (pc.moveVertical > 0f && (pc.IsGrounded())) {
+        if (pc.velocityVertical > 0f && (pc.IsGrounded())) {
             doubleJump = true;
             pc.rb2D.velocity = (new Vector2(pc.rb2D.velocity.x, pc.jumpForce));
             pc.hasJumpedOnce = false;
         }
-        if (pc.moveVertical > 0f && pc.hasJumpedOnce) {
+        if (pc.velocityVertical > 0f && pc.hasJumpedOnce) {
             doubleJump = false;
             pc.hasJumpedOnce = false;
             pc.rb2D.velocity = (new Vector2(pc.rb2D.velocity.x, pc.jumpForce));
         }
-        if(pc.moveVertical == 0f && doubleJump){
+        if(pc.velocityVertical == 0f && doubleJump){
             pc.hasJumpedOnce = true;
         }
         return true;
     }
-
-    // private bool IsGrounded(){
-    //     // float buffer = .01f;
-    //     // RaycastHit2D raycastHit = Physics2D.Raycast(cc2d.bounds.center, Vector2.down, cc2d.bounds.extents.y + buffer, groundLayer);
-    //     // return (raycastHit.collider != null);
-    // }
 }
 
 class Dash: Command {
@@ -72,7 +66,7 @@ class Dash: Command {
         this.dashSpeed = 50;
     }
 
-    new public bool execute(){
+    public new bool execute(){
         if(dashDuration == dashTime){
             this.gravity = pc.rb2D.gravityScale;
             pc.rb2D.gravityScale = 0;
