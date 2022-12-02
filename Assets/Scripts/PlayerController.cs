@@ -46,12 +46,12 @@ public class PlayerController : MonoBehaviour {
         run = new Run(this);
         jump = new Jump(this);
         dash = new Dash(this);
-        gameObject.AddComponent<Run>();
-        gameObject.AddComponent<Jump>();
+        animationBehavior = new Idle(this);
     }
 
     // Update is called once per frame
     void Update() {
+        grounded = IsGrounded();
         if(dashing){
             if(!dash.execute()){
                 return;
@@ -63,11 +63,6 @@ public class PlayerController : MonoBehaviour {
 
         velocityHorizontal = Input.GetAxisRaw("Horizontal");                                // gets keyboard input via Input (1.0, 0, or -1.0 depending on direction)
         velocityVertical = Input.GetAxisRaw("Vertical");                                    // gets keyboard input via Input (1.0 or 0 depending on direction)
-        if (velocityHorizontal != 0f) {
-            animator.SetBool("IsRunning", true);
-        } else {
-            animator.SetBool("IsRunning", false);
-        }
 
         if (Input.GetKeyDown(KeyCode.RightShift) && dashing == false) {
             dash.execute();
@@ -79,6 +74,7 @@ public class PlayerController : MonoBehaviour {
         } else {
             isFalling = false;
         }
+
 
         determineAnimation();
     }
@@ -135,12 +131,14 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void determineAnimation() {
+        string previousAnimationBehavior = animationBehavior.GetType().Name;        // store animation behavior to detect change
+
         if (velocityHorizontal == 0 && velocityVertical == 0) {                     // if player is not moving, animation is Idle
             animationBehavior = new Idle(this);
         }
 
         if (velocityHorizontal != 0 && grounded == true) {                          // if player is on the ground and has non-zero horizontal velocity, animation is Running
-            animationBehavior = new Running(this);              
+            animationBehavior = new Running(this);
         }
 
         if (grounded == false && rb2D.velocity.y > 0) {                             // if player is not grounded and they have not yet reached jump apex, animation is Jumping
@@ -151,5 +149,9 @@ public class PlayerController : MonoBehaviour {
             animationBehavior = new Falling(this);
         }
 
+        if (previousAnimationBehavior != animationBehavior.GetType().Name) {        // checks if an animation change has occured. this prevents an animation from replaying every frame or stuttering out
+            // Debug.Log("Animation Change");
+            animationBehavior.executeAnimation();
+        }
     }
 }

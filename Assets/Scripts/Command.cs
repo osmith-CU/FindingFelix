@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-abstract class Command : MonoBehaviour {
+abstract class Command {
     public PlayerController pc; 
     public bool execute() {return true;}
 }
@@ -12,7 +12,7 @@ class Run : Command {
     public Run(PlayerController pc){
         this.pc = pc;
     }
-    new public bool execute() {
+    public new bool execute() {
         if (pc.velocityHorizontal != 0f) {
             if(pc.velocityHorizontal > 0f){
                 pc.rb2D.transform.localScale = new Vector3(1, 1, 1);
@@ -34,7 +34,7 @@ class Jump : Command {
         this.pc = pc;
     }
 
-    new public bool execute() {
+    public new bool execute() {
 
         if (pc.velocityVertical > 0f && (pc.IsGrounded())) {
             doubleJump = true;
@@ -66,7 +66,7 @@ class Dash: Command {
         this.dashSpeed = 50;
     }
 
-    new public bool execute(){
+    public new bool execute(){
         if(dashDuration == dashTime){
             this.gravity = pc.rb2D.gravityScale;
             pc.rb2D.gravityScale = 0;
