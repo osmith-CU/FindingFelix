@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour {
     private Dash dash;
     private static PlayerController uniqueInstance;
     private AnimationBehavior animationBehavior;
+    private SaveManager saveManager;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask trapLayer;
     [SerializeField] private LayerMask levelLayer;
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour {
         jump = new Jump(this);
         dash = new Dash(this);
         animationBehavior = new Idle(this);
+        saveManager = new SaveManager("Level"+(sceneVal + 1), "Save_1", this);
     }
 
     // Update is called once per frame
@@ -105,17 +107,28 @@ public class PlayerController : MonoBehaviour {
     private bool Kill() {
         float buffer = .01f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, trapLayer);
+        saveManager.load();
         return (raycastHit.collider != null);
     }
 
     private bool loadLevelCheck() {
         float buffer = .01f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, levelLayer);
+        createSave();
         return raycastHit.collider != null;
     }
 
     private void loadNextLevel() {
         SceneManager.LoadScene(sceneVal);
+    }
+
+    private void createSave(){
+        saveManager.updateStage(sceneVal + 1);
+        saveManager.save();
+    }
+
+    public void loadFromSave(string level){
+        SceneManager.LoadScene(level);
     }
 
     // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)
