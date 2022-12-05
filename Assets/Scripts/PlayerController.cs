@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour {
     public bool grounded;
     public bool hasJumpedOnce;
     public int sceneVal;
+    private bool isAlive;
     public Animator animator;
     private Jump jump;
     private Run run;
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour {
     
     // Start is called before the first frame update
     void Start() {
+        isAlive = true;
         sceneVal = 1;
         hasJumpedOnce = false;
         movementSpeed = 1f;
@@ -58,7 +60,7 @@ public class PlayerController : MonoBehaviour {
             if(!dash.execute()){
                 return;
             } else {
-                Debug.Log("here");
+                // Debug.Log("here");
                 dashing = false;
             }
         }
@@ -82,18 +84,21 @@ public class PlayerController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        run.execute();
-        jump.execute();
+        if (isAlive == true) {
+            run.execute();
+            jump.execute();
+        }
 
         if(velocityVertical < 0f){
             isFalling = true;
         }
         if(Kill()){
-            Debug.Log("trapped");
-            rb2D.position = respawn.position;
+            // Debug.Log("trapped");
+            isAlive = false;
+            Invoke("Respawn", 2);                                                         // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
         }
         if(loadLevelCheck()){
-            Debug.Log("nextLevel");
+            // Debug.Log("nextLevel");
             loadNextLevel();
         }
     }
@@ -111,6 +116,11 @@ public class PlayerController : MonoBehaviour {
         return (raycastHit.collider != null);
     }
 
+    private void Respawn() {
+        isAlive = true;
+        rb2D.position = respawn.position;
+    }
+
     private bool loadLevelCheck() {
         float buffer = .01f;
         RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, levelLayer);
@@ -119,7 +129,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void loadNextLevel() {
-        SceneManager.LoadScene(sceneVal);
+        SceneManager.LoadScene(sceneVal + 1);
     }
 
     private void createSave(){
@@ -158,8 +168,12 @@ public class PlayerController : MonoBehaviour {
             animationBehavior = new Jumping(this);
         }
 
-        if (grounded == false && isFalling == true) {                               // if player is not grouned and they have negative vertical velocity (post-apex), animation is Falling
+        if (grounded == false && isFalling == true) {                               // if player is not grounded and they have negative vertical velocity (post-apex), animation is Falling
             animationBehavior = new Falling(this);
+        }
+
+        if (isAlive == false) {
+            animationBehavior = new Death(this);
         }
 
         if (previousAnimationBehavior != animationBehavior.GetType().Name) {        // checks if an animation change has occured. this prevents an animation from replaying every frame or stuttering out

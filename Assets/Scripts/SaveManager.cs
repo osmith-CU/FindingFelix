@@ -35,7 +35,7 @@ public class SaveManager{
         FileStream stream = new FileStream(Application.dataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Open);
         saveValues = serializer.Deserialize(stream) as saveEntry;
         stream.Close();
-        Debug.Log(saveValues.stageName);
+        // Debug.Log("Load: " + saveValues.stageName);
         //this.playerController.loadFromSave(saveValues.stageName);
     }
 }
