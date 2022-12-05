@@ -75,7 +75,7 @@ class Dash: Command {
         dashDuration -= Time.deltaTime;
         Debug.Log(dashDuration);
         if(dashDuration <= 0){
-            pc.rb2D.velocity = new Vector2(0, 0);
+            pc.rb2D.velocity = new Vector2(10 * pc.rb2D.transform.localScale[0], 0);
             pc.rb2D.gravityScale = gravity;
             dashDuration = dashTime;
             return true;
