@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public float movementSpeed;
     public float jumpForce;
     private bool isFalling;
+    private bool canDash;
     public bool dashing;
     public float dashSpeed;
     public float dashDuration;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask trapLayer;
     [SerializeField] private LayerMask levelLayer;
+    [SerializeField] private LayerMask finishLayer;
     [SerializeField] private Transform respawn;
 
 
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour {
         jump = new Jump(this);
         dash = new Dash(this);
         animationBehavior = new Idle(this);
+        canDash = true;
         //saveManager = new SaveManager("Save_0", this);
         pauseMenu = new PauseMenu(saveManager, this);
     }
@@ -66,6 +69,9 @@ public class PlayerController : MonoBehaviour {
                 dashing = false;                                                            //else if dash has finished, set dashing to false
             }
         }
+        if(grounded){
+            canDash = true;
+        }
 
         velocityHorizontal = Input.GetAxisRaw("Horizontal");                                // gets keyboard input via Input (1.0, 0, or -1.0 depending on direction)
         velocityVertical = Input.GetAxisRaw("Vertical");                                    // gets keyboard input via Input (1.0 or 0 depending on direction)
@@ -74,9 +80,10 @@ public class PlayerController : MonoBehaviour {
             Time.timeScale = 0; 
             SceneManager.LoadScene("PauseMenu", LoadSceneMode.Additive);                    // https://forum.unity.com/threads/add-a-scene-into-another-scene-kind-of-overlay.504545/
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashing == false) {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashing == false && canDash) {
             dash.execute();
             dashing = true;
+            canDash = false;
         }
 
         if (grounded == false && rb2D.velocity.y < 0) {                                     // checks if the player is falling; used for animation purposes
@@ -89,6 +96,10 @@ public class PlayerController : MonoBehaviour {
             // Debug.Log("trapped");
             isAlive = false;
             StartCoroutine(Respawn());                                                      // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
+        }
+
+        if(FinishGame()){
+            SceneManager.LoadScene("EndGameMenu");
         }
 
         determineAnimation();
@@ -124,6 +135,13 @@ public class PlayerController : MonoBehaviour {
         return (raycastHit.collider != null);
     }
 
+    private bool FinishGame() {
+        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
+        float buffer = .01f;    
+        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, finishLayer);             //boxcast (detect on all sides, not jsut down) to see if touching EndGame
+        return (raycastHit.collider != null);
+    }
+
     IEnumerator Respawn() {
         yield return new WaitForSeconds(1);
         isAlive = true;
@@ -140,7 +158,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void loadNextLevel() {
-        SceneManager.LoadScene(sceneVal + 1);
+        Scene currentScene = SceneManager.GetActiveScene();
+        int levelNum = currentScene.name[currentScene.name.Length - 1] - '0' ;
+        Debug.Log(levelNum);
+        SceneManager.LoadScene("Level" + (levelNum + 1));
     }
 
     // SINGLETON IMPLEMENTATION
