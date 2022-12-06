@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour {
     private static PlayerController uniqueInstance;
     private AnimationBehavior animationBehavior;
     private SaveManager saveManager;
+    private PauseMenu pauseMenu;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask trapLayer;
     [SerializeField] private LayerMask levelLayer;
@@ -51,18 +52,18 @@ public class PlayerController : MonoBehaviour {
         jump = new Jump(this);
         dash = new Dash(this);
         animationBehavior = new Idle(this);
-        saveManager = new SaveManager("Level"+(sceneVal + 1), "Save_1", this);
+        //saveManager = new SaveManager("Save_0", this);
+        pauseMenu = new PauseMenu(saveManager, this);
     }
 
     // Update is called once per frame
     void Update() {
         grounded = IsGrounded();
         if(dashing){
-            if(!dash.execute()){
+            if(!dash.execute()){                                                            //If currently dashing and still executing, then just immediately returns
                 return;
             } else {
-                // Debug.Log("here");
-                dashing = false;
+                dashing = false;                                                            //else if dash has finished, set dashing to false
             }
         }
 
@@ -90,37 +91,36 @@ public class PlayerController : MonoBehaviour {
             StartCoroutine(Respawn());                                                       // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
         }
 
-
-
-
         determineAnimation();
     }
 
     void FixedUpdate() {
-        if (isAlive == true) {
+        if (isAlive == true) {                                                              //if isAlive, we run and jump
             run.execute();
             jump.execute();
         }
 
-        if(velocityVertical < 0f){
+        if(velocityVertical < 0f){                                                 
             isFalling = true;
         }
         if(loadLevelCheck()){
-            // Debug.Log("nextLevel");
+            // Debug.Log("nextLevel");                                                      //If we are touching the next level object, go to the next level
             loadNextLevel();
         }
     }
 
     public bool IsGrounded() {
+        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
         float buffer = .01f;
-        RaycastHit2D raycastHit = Physics2D.Raycast(cc2d.bounds.center, Vector2.down, cc2d.bounds.extents.y + buffer, groundLayer);
+        RaycastHit2D raycastHit = Physics2D.Raycast(cc2d.bounds.center, Vector2.down, cc2d.bounds.extents.y + buffer, groundLayer);         //raycast downwards to see if grounded
         return (raycastHit.collider != null);
     }
 
     private bool Kill() {
-        float buffer = .01f;
-        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, trapLayer);
-        saveManager.load();
+        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
+        float buffer = .01f;    
+        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, trapLayer);             //boxcast (detect on all sides, not jsut down) to see if touching a trap
+        //saveManager.load();   
         return (raycastHit.collider != null);
     }
 
@@ -131,23 +131,14 @@ public class PlayerController : MonoBehaviour {
     }
 
     private bool loadLevelCheck() {
+        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
         float buffer = .01f;
-        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, levelLayer);
-        createSave();
+        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, levelLayer);            //boxcast (detect on all sides, not jsut down) to see if touching nextLevel
         return raycastHit.collider != null;
     }
 
     private void loadNextLevel() {
         SceneManager.LoadScene(sceneVal + 1);
-    }
-
-    private void createSave(){
-        saveManager.updateStage(sceneVal + 1);
-        saveManager.save();
-    }
-
-    public void loadFromSave(string level){
-        SceneManager.LoadScene(level);
     }
 
     // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)
@@ -156,10 +147,6 @@ public class PlayerController : MonoBehaviour {
             uniqueInstance = new GameObject().AddComponent<PlayerController>();
         }
         return uniqueInstance;
-    }
-
-    private void pauseGame() {
-
     }
 
     private void determineAnimation() {
@@ -185,7 +172,7 @@ public class PlayerController : MonoBehaviour {
             animationBehavior = new Death(this);
         }
 
-
+    
         if (previousAnimationBehavior != animationBehavior.GetType().Name) {        // checks if an animation change has occured. this prevents an animation from replaying every frame or stuttering out
             // Debug.Log("Animation Change");
             animationBehavior.executeAnimation();

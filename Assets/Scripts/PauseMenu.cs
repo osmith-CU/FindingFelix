@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     SaveManager saveManager;
-    PlayerController playerController;
+    PlayerController playerController;    
 
-    PauseMenu(SaveManager sm, PlayerController pc) {                // initialize PauseMenu with necessary SaveManager and PlayerController for playerScene and serialization
-        saveManager = sm;
-        playerController = pc;
+    public PauseMenu(SaveManager sm, PlayerController pc) {                // initialize PauseMenu with necessary SaveManager and PlayerController for playerScene and serialization
+        this.saveManager = sm;
+        this.playerController = pc;
     }
 
     public void ContinueGame() {                                    // unload the scene asynchronously, unpause time, and resume the original scene
@@ -20,7 +20,10 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void SaveGame() {
-        // Debug.Log("Save Game");
+        saveManager = new SaveManager("Save_0");
+        saveManager.updateStage(SceneManager.GetSceneAt(0).name);
+        Debug.Log(SceneManager.GetSceneAt(0).name);
+        saveManager.save();
     }
 
     public void ExitToMainMenu() {

@@ -1,46 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
+//This class works as the Memento part of the Memento Pattern
 
-
-public class SaveManager{
+public class SaveManager{                   //Saving stuff (memento)
     //Singleton
-    private PlayerController playerController;
     private saveEntry saveValues = new saveEntry();
-    public SaveManager(string stageName, string fileName, PlayerController playerController){
-        this.saveValues.stageName = stageName;
+    public SaveManager(string fileName){
         this.saveValues.fileName = fileName;
-        this.playerController = playerController;
     }
 
-    public void updateStage(int newNumber){
-        this.saveValues.stageName = "Level" + newNumber;
+    public void updateStage(string newStage){           //updates the stage name
+        this.saveValues.stageName = newStage;
     }
 
     //base structure for save and load functions from https://www.youtube.com/watch?v=6vl1IYMpwVQ
-    public void save(){
+    public void save(){                 //Saves to xml files
+
+        bool directory = System.IO.Directory.Exists(Application.persistentDataPath + "/SaveFiles");                   //directory exploration from https://stackoverflow.com/questions/9065598/if-a-folder-does-not-exist-create-it
+        if(!directory){
+            System.IO.Directory.CreateDirectory(Application.persistentDataPath + "/SaveFiles");
+        }
         XmlSerializer serializer = new XmlSerializer(typeof(saveEntry));
-        FileStream stream = new FileStream(Application.dataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Create);
+        FileStream stream = new FileStream(Application.persistentDataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Create);
+        Debug.Log(Application.persistentDataPath);
         serializer.Serialize(stream, saveValues);
         stream.Close();
     }
 
-    public void load(){
+    public void load(){         
+        //Loads from XML file
         XmlSerializer serializer = new XmlSerializer(typeof(saveEntry));
-        FileStream stream = new FileStream(Application.dataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Open);
+        FileStream stream = new FileStream(Application.persistentDataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Open);
         saveValues = serializer.Deserialize(stream) as saveEntry;
         stream.Close();
-        // Debug.Log("Load: " + saveValues.stageName);
-        //this.playerController.loadFromSave(saveValues.stageName);
+        //loads scene stores in scene manager
+        SceneManager.LoadScene(saveValues.stageName);
     }
 }
 
-public class saveEntry{
+public class saveEntry{           //datastructure for our saves
     public string stageName;      //tells which stage to load
     public string fileName;       //tells which save file its stored in
 }
