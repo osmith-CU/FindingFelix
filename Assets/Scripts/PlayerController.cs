@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour {
     
     // Start is called before the first frame update
     void Start() {
+        Time.timeScale = 1;
         isAlive = true;
         sceneVal = 1;
         hasJumpedOnce = false;
@@ -68,6 +69,10 @@ public class PlayerController : MonoBehaviour {
         velocityHorizontal = Input.GetAxisRaw("Horizontal");                                // gets keyboard input via Input (1.0, 0, or -1.0 depending on direction)
         velocityVertical = Input.GetAxisRaw("Vertical");                                    // gets keyboard input via Input (1.0 or 0 depending on direction)
 
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            Time.timeScale = 0; 
+            SceneManager.LoadScene("PauseMenu", LoadSceneMode.Additive);                    // https://forum.unity.com/threads/add-a-scene-into-another-scene-kind-of-overlay.504545/
+        }
         if (Input.GetKeyDown(KeyCode.RightShift) && dashing == false) {
             dash.execute();
             dashing = true;
@@ -78,6 +83,14 @@ public class PlayerController : MonoBehaviour {
         } else {
             isFalling = false;
         }
+
+        if(Kill()){
+            // Debug.Log("trapped");
+            isAlive = false;
+            StartCoroutine(Respawn());                                                       // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
+        }
+
+
 
 
         determineAnimation();
@@ -91,11 +104,6 @@ public class PlayerController : MonoBehaviour {
 
         if(velocityVertical < 0f){
             isFalling = true;
-        }
-        if(Kill()){
-            // Debug.Log("trapped");
-            isAlive = false;
-            Invoke("Respawn", 2);                                                         // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
         }
         if(loadLevelCheck()){
             // Debug.Log("nextLevel");
@@ -116,7 +124,8 @@ public class PlayerController : MonoBehaviour {
         return (raycastHit.collider != null);
     }
 
-    private void Respawn() {
+    IEnumerator Respawn() {
+        yield return new WaitForSeconds(1);
         isAlive = true;
         rb2D.position = respawn.position;
     }
@@ -175,6 +184,7 @@ public class PlayerController : MonoBehaviour {
         if (isAlive == false) {
             animationBehavior = new Death(this);
         }
+
 
         if (previousAnimationBehavior != animationBehavior.GetType().Name) {        // checks if an animation change has occured. this prevents an animation from replaying every frame or stuttering out
             // Debug.Log("Animation Change");
