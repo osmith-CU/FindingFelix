@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour {
             Time.timeScale = 0; 
             SceneManager.LoadScene("PauseMenu", LoadSceneMode.Additive);                    // https://forum.unity.com/threads/add-a-scene-into-another-scene-kind-of-overlay.504545/
         }
-        if (Input.GetKeyDown(KeyCode.RightShift) && dashing == false) {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashing == false) {
             dash.execute();
             dashing = true;
         }
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour {
         if(Kill()){
             // Debug.Log("trapped");
             isAlive = false;
-            StartCoroutine(Respawn());                                                       // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
+            StartCoroutine(Respawn());                                                      // https://stackoverflow.com/questions/30056471/how-to-make-the-script-wait-sleep-in-a-simple-way-in-unity
         }
 
         determineAnimation();
@@ -128,6 +128,8 @@ public class PlayerController : MonoBehaviour {
         yield return new WaitForSeconds(1);
         isAlive = true;
         rb2D.position = respawn.position;
+        rb2D.velocity = Vector3.zero;
+        grounded = true;
     }
 
     private bool loadLevelCheck() {
@@ -141,6 +143,7 @@ public class PlayerController : MonoBehaviour {
         SceneManager.LoadScene(sceneVal + 1);
     }
 
+    // SINGLETON IMPLEMENTATION
     // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)
     public static PlayerController getInstance() {
         if (uniqueInstance == null) {
