@@ -16,7 +16,7 @@ public class PauseMenu : MonoBehaviour
         SceneManager.UnloadSceneAsync("PauseMenu");                 // removes the "top" scene on the additive scene overlay
     }
 
-    public void SaveGame() {
+    public void SaveGame() {                                        // saves current game level
         saveManager = new SaveManager("Save_0");
         saveManager.updateStage(SceneManager.GetSceneAt(0).name);
         Debug.Log(SceneManager.GetSceneAt(0).name);
