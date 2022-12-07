@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour {
         animationBehavior = new Idle(this);
         canDash = true;
         //saveManager = new SaveManager("Save_0", this);
-        pauseMenu = new PauseMenu(saveManager, this);
+        // pauseMenu = new PauseMenu(saveManager, this);
     }
 
     // Update is called once per frame
