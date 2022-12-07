@@ -6,11 +6,10 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     SaveManager saveManager;
-    PlayerController playerController;    
 
     public PauseMenu(SaveManager sm, PlayerController pc) {                // initialize PauseMenu with necessary SaveManager and PlayerController for playerScene and serialization
-        this.saveManager = sm;
-        this.playerController = pc;
+        //this.saveManager = sm;
+        //this.playerController = pc;
     }
 
     public void ContinueGame() {                                    // unload the scene asynchronously, unpause time, and resume the original scene

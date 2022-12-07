@@ -12,8 +12,6 @@ public class PlayerController : MonoBehaviour {
     private bool isFalling;
     private bool canDash;
     public bool dashing;
-    public float dashSpeed;
-    public float dashDuration;
     public float velocityHorizontal;
     public float velocityVertical;
     public bool grounded;
