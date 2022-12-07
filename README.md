@@ -5,7 +5,7 @@ Owen Smith and Kyle Ma, Developed using Unity 2021.3.11f1 and a C# 9.0 compiler.
 
 ## Run Instructions
 
-Enter "executable" directory, and launch the executable therein. Press Start Game to begin playing when the main menu pops up after the Unity intro.
+Enter "executable" directory, and launch the executable "FindingFelix.exe". Press Start Game to begin playing when the main menu pops up after the Unity intro.
 
 ## Controls Documentation
 ESC - pause menu
