@@ -8,7 +8,12 @@ Owen Smith and Kyle Ma, Developed using Unity 2021.3.11f1 and a C# 9.0 compiler.
 
 ## Controls Documentation
 ESC - pause menu
+
 W - Jump
+
 A - Left Run
+
 D - Right Run
+
 LSHIFT - Dash
+
