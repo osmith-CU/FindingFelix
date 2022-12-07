@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-//Command Pattern
+/*-----COMMAND IMPLEMENTATION-----*/
+
 abstract class Command {
     public PlayerController pc; 
     public bool execute() {return true;}

@@ -7,7 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
-//This class works as the Memento part of the Memento Pattern
+/*-----MEMENTO IMPLEMENTATION-----*/
 
 public class SaveManager{                   //Saving stuff (memento)
     //Singleton
@@ -23,13 +23,12 @@ public class SaveManager{                   //Saving stuff (memento)
     //base structure for save and load functions from https://www.youtube.com/watch?v=6vl1IYMpwVQ
     public void save(){                 //Saves to xml files
 
-        bool directory = System.IO.Directory.Exists(Application.persistentDataPath + "/SaveFiles");                   //directory exploration from https://stackoverflow.com/questions/9065598/if-a-folder-does-not-exist-create-it
-        if(!directory){
+        bool directory = System.IO.Directory.Exists(Application.persistentDataPath + "/SaveFiles");                                 // creates boolean for directory               
+        if(!directory){                                                                                                             // if directory has not been created, create it
             System.IO.Directory.CreateDirectory(Application.persistentDataPath + "/SaveFiles");
         }
-        XmlSerializer serializer = new XmlSerializer(typeof(saveEntry));
+        XmlSerializer serializer = new XmlSerializer(typeof(saveEntry));                                                            // create and XML Serializer for save writes
         FileStream stream = new FileStream(Application.persistentDataPath + "/SaveFiles/data" + saveValues.fileName + ".xml",  FileMode.Create);
-        Debug.Log(Application.persistentDataPath);
         serializer.Serialize(stream, saveValues);
         stream.Close();
     }

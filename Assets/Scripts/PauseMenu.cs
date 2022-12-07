@@ -7,13 +7,11 @@ public class PauseMenu : MonoBehaviour
 {
     SaveManager saveManager;
 
-    public PauseMenu(SaveManager sm, PlayerController pc) {                // initialize PauseMenu with necessary SaveManager and PlayerController for playerScene and serialization
-        //this.saveManager = sm;
-        //this.playerController = pc;
+    public PauseMenu(SaveManager sm) {                              // initialize PauseMenu with necessary SaveManager and PlayerController for playerScene and serialization
+        saveManager = sm;
     }
 
     public void ContinueGame() {                                    // unload the scene asynchronously, unpause time, and resume the original scene
-        // Debug.Log("Continue Game");
         Time.timeScale = 1;
         SceneManager.UnloadSceneAsync("PauseMenu");                 // removes the "top" scene on the additive scene overlay
     }
@@ -26,7 +24,6 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void ExitToMainMenu() {
-        // Debug.Log("Return to Main Menu");
         SceneManager.LoadScene("MainMenu");                         // returns to main menu via a scene load
     }
 }

@@ -2,23 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AnimationBehavior 
+/*-----STRATEGY IMPLEMENTATION-----*/
+
+public abstract class AnimationBehavior                             // abstract class to implement strategy pattern for animations
 {
     public PlayerController playerController;
     public abstract void executeAnimation();
 }
 
-class Idle : AnimationBehavior
+class Idle : AnimationBehavior                                      // Idle animation (plays if no other animation is playing)                                
 {
     public Idle(PlayerController pc) {
         this.playerController = pc;
     }
     public override void executeAnimation() {
-        playerController.animator.Play("Base Layer.Gary_Idle");
+        playerController.animator.Play("Base Layer.Gary_Idle");     // plays animations via an animator component attached to Gary in the scene
     }
 }
 
-class Running : AnimationBehavior
+class Running : AnimationBehavior                                   // Running animation (plays when grounded and x-velocity is nonzero)
 {
     public Running(PlayerController pc) {
         this.playerController = pc;
@@ -28,7 +30,7 @@ class Running : AnimationBehavior
     }
 }
 
-class Jumping : AnimationBehavior
+class Jumping : AnimationBehavior                                   // Jumping animation (plays when not grounded and y-velocity is positive)
 {
     public Jumping(PlayerController pc) {
         this.playerController = pc;
@@ -38,7 +40,7 @@ class Jumping : AnimationBehavior
     }
 }
 
-class Falling : AnimationBehavior
+class Falling : AnimationBehavior                                   // Falling animation (plays when not grounded and y-velocity is negative)
 {
     public Falling(PlayerController pc) {
         this.playerController = pc;
@@ -48,7 +50,7 @@ class Falling : AnimationBehavior
     }
 }
 
-class Death : AnimationBehavior
+class Death : AnimationBehavior                                     // plays upon death (Gary's collider detects a trap object)
 {
     public Death(PlayerController pc) {
         this.playerController = pc;

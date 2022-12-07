@@ -118,31 +118,31 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    /* 
+    Several functions use a RaycastHit2D and a level layer in order to determine interaction. This method was taken from the following tutorial:
+    https://www.youtube.com/watch?v=c3iEl5AwUF8 
+    */
     public bool IsGrounded() {
-        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
         float buffer = .01f;
         RaycastHit2D raycastHit = Physics2D.Raycast(cc2d.bounds.center, Vector2.down, cc2d.bounds.extents.y + buffer, groundLayer);         //raycast downwards to see if grounded
         return (raycastHit.collider != null);
     }
 
     private bool Kill() {
-        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
         float buffer = .01f;    
         RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, trapLayer);             //boxcast (detect on all sides, not jsut down) to see if touching a trap
-        //saveManager.load();   
         return (raycastHit.collider != null);
     }
 
     private bool FinishGame() {
-        //ray detection taken from https://www.youtube.com/watch?v=c3iEl5AwUF8
         float buffer = .01f;    
-        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, finishLayer);             //boxcast (detect on all sides, not jsut down) to see if touching EndGame
+        RaycastHit2D raycastHit = Physics2D.BoxCast(cc2d.bounds.center, cc2d.bounds.size, 0f, Vector2.down, buffer, finishLayer);           //boxcast (detect on all sides, not jsut down) to see if touching EndGame
         return (raycastHit.collider != null);
     }
 
-    IEnumerator Respawn() {
-        yield return new WaitForSeconds(1);
-        isAlive = true;
+    IEnumerator Respawn() {                             // coroutine that respawns character upon death
+        yield return new WaitForSeconds(1);             // wait for 1 second (allows death animation to play)
+        isAlive = true;                                 // adjust necessary player condition variables for spawning
         rb2D.position = respawn.position;
         rb2D.velocity = Vector3.zero;
         grounded = true;
@@ -155,23 +155,22 @@ public class PlayerController : MonoBehaviour {
         return raycastHit.collider != null;
     }
 
-    private void loadNextLevel() {
-        Scene currentScene = SceneManager.GetActiveScene();
-        int levelNum = currentScene.name[currentScene.name.Length - 1] - '0' ;
-        Debug.Log(levelNum);
-        SceneManager.LoadScene("Level" + (levelNum + 1));
+    private void loadNextLevel() {                                                  // loads next level scene
+        Scene currentScene = SceneManager.GetActiveScene();                         // grabs scene object from monobehavior
+        int levelNum = currentScene.name[currentScene.name.Length - 1] - '0' ;      
+        SceneManager.LoadScene("Level" + (levelNum + 1));                           // loads next level via SceneManager from MonoBehavior
     }
 
-    // SINGLETON IMPLEMENTATION
-    // eager instantiation for singleton (only ever one player in scene and thus one playerController object in scene)
+    /*-----SINGLETON IMPLEMENTATION-----*/
+    // eager instantiation for singleton (only ever one player in scene and thus one playerController component in scene)
     public static PlayerController getInstance() {
         if (uniqueInstance == null) {
-            uniqueInstance = new GameObject().AddComponent<PlayerController>();
+            uniqueInstance = new GameObject().AddComponent<PlayerController>();     // because 'new' is prohibited, we can return the GameObject with the addition of the component
         }
         return uniqueInstance;
     }
 
-    private void determineAnimation() {
+    private void determineAnimation() {                                             // function uses various player conditions to determine animation and play it
         string previousAnimationBehavior = animationBehavior.GetType().Name;        // store animation behavior to detect change
 
         if (velocityHorizontal == 0 && velocityVertical == 0) {                     // if player is not moving, animation is Idle
